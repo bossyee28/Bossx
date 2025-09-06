@@ -1,1 +1,501 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Public Dashboard BossX</title>
+  <style>
+    :root {
+      --purple: #6a0dad;
+      --pink: #ff69b4;
+      --gold: #FFD700;
+      --overlay: rgba(0, 0, 0, 0.3);
+      --green-icon: #00ff00;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, var(--purple), var(--pink));
+      color: var(--gold);
+    }
+
+    header {
+      background-color: var(--overlay);
+      padding: 20px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid var(--gold);
+    }
+
+    .logo-title {
+      display: flex;
+      align-items: center;
+    }
+
+    .logo-title img {
+      height: 40px;
+      margin-right: 12px;
+    }
+
+    .logo-title h1 {
+      margin: 0;
+      font-size: 1.8em;
+    }
+
+    .user-info {
+      text-align: right;
+    }
+
+    .user-info div {
+      margin: 2px 0;
+      font-size: 1em;
+    }
+
+    main {
+      padding: 30px 20px;
+      max-width: 1200px;
+      margin: auto;
+    }
+
+    .main-container {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .left-column,
+    .right-column {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .left-column {
+      flex: 1;
+    }
+
+    .right-column {
+      flex: 2;
+    }
+
+    .card {
+      background-color: var(--overlay);
+      padding: 20px;
+      border-radius: 12px;
+      border: 1px solid var(--gold);
+    }
+
+    /* khusus untuk card Validasi Masternode */
+    .masternode-card {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 220px;
+    }
+
+    .card h2 {
+      margin-top: 0;
+      font-size: 1.4em;
+      color: var(--gold);
+    }
+
+    .saldo-value {
+      margin-top: 10px;
+      font-size: 1.6em;
+      font-weight: bold;
+      color: var(--gold);
+    }
+
+    .timer {
+      margin-top: 10px;
+      font-size: 1em;
+      color: var(--gold);
+    }
+
+    .btn-container {
+      display: flex;
+      gap: 15px;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
+
+    /* pastikan tombol di bawah pada card masternode */
+    .masternode-card .btn-container {
+      margin-top: auto;
+    }
+
+    .btn {
+      padding: 10px 20px;
+      font-size: 1em;
+      background-color: var(--gold);
+      color: var(--purple);
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s, box-shadow 0.3s;
+    }
+
+    .btn:hover {
+      background-color: #ffec8b;
+      box-shadow: 0 0 10px var(--gold);
+    }
+
+    .btn:disabled {
+      background-color: #333;
+      color: #888;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    /* tombol power custom */
+    .power-btn {
+      width: 60px;
+      height: 60px;
+      background: radial-gradient(circle at top left, #444, #000);
+      border: 4px solid #bbb;
+      border-radius: 50%;
+      position: relative;
+      cursor: pointer;
+      transition: box-shadow 0.3s, border-color 0.3s;
+    }
+
+    .power-btn:hover {
+      box-shadow: 0 0 15px var(--green-icon);
+      border-color: #ddd;
+    }
+
+    /* garis vertikal icon power */
+    .power-btn::before {
+      content: "";
+      position: absolute;
+      top: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 4px;
+      height: 18px;
+      background-color: var(--green-icon);
+      border-radius: 2px;
+    }
+
+    /* lengkungan lingkaran icon power */
+    .power-btn::after {
+      content: "";
+      position: absolute;
+      top: 18px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 30px;
+      height: 30px;
+      border: 4px solid var(--green-icon);
+      border-radius: 50%;
+      background: transparent;
+    }
+
+    input[type="number"] {
+      margin-top: 10px;
+      padding: 10px;
+      width: 200px;
+      border: none;
+      border-radius: 8px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+
+    th,
+    td {
+      border: 1px solid var(--gold);
+      padding: 10px;
+      text-align: center;
+    }
+
+    th {
+      background-color: var(--gold);
+      color: var(--purple);
+    }
+
+    td {
+      background-color: rgba(255, 255, 255, 0.1);
+      color: var(--gold);
+      font-size: 0.95em;
+    }
+
+    .footer {
+      text-align: center;
+      padding: 20px;
+      font-size: 0.9em;
+      color: var(--gold);
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo-title">
+      <img src="https://i.ibb.co/qYBkPDH3/Picsart-25-04-01-16-25-47-054.png" alt="Logo BossX"/>
+      <h1>Public Dashboard BossX</h1>
+    </div>
+    <div class="user-info">
+      <div>👤 Username: <strong>boss</strong></div>
+      <div>🪪 Profil ID: <strong>805</strong></div>
+    </div>
+  </header>
+
+  <main>
+    <div class="main-container">
+      <!-- Kolom Kiri -->
+      <div class="left-column">
+
+        <!-- Validasi Masternode -->
+        <div class="card masternode-card">
+          <h2>Validasi Masternode</h2>
+          <div class="saldo-value" id="mining">0.000000000 BossX</div>
+          <div class="timer" id="stopCountdown">Belum berjalan</div>
+          <div class="btn-container">
+            <button class="power-btn" id="onBtn"></button>
+          </div>
+        </div>
+
+        <!-- Reward Validasi -->
+        <div class="card">
+          <h2>Reward Validasi</h2>
+          <div class="saldo-value" id="balance">0.000000000 BossX</div>
+          <div class="timer" id="countdown">Auto-claim dalam: 60 detik</div>
+          <div class="btn-container">
+            <button class="btn" id="convertBtn">Convert to USDT</button>
+          </div>
+        </div>
+
+        <!-- Paket Node -->
+        <div class="card">
+          <h2>Paket Node</h2>
+          <div class="saldo-value">
+            <span id="walletBossX">0</span> BossX
+          </div>
+          <input type="number" id="amountInput" placeholder="Minimal 50 BossX"/>
+          <div class="btn-container">
+            <button class="btn" id="buyBtn">Aktivasi Paket</button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Kolom Kanan: Riwayat -->
+      <div class="right-column">
+
+        <div class="card">
+          <h2>Riwayat Auto-Claim</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>Hari</th>
+                <th>Tanggal</th>
+                <th>Jam</th>
+                <th>Jumlah BossX</th>
+                <th>Auto-Claim</th>
+              </tr>
+            </thead>
+            <tbody id="history"></tbody>
+          </table>
+        </div>
+
+        <div class="card">
+          <h2>Riwayat Transaksi Wallet</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>Waktu</th>
+                <th>Jenis</th>
+                <th>Jumlah</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="walletHistory"></tbody>
+          </table>
+        </div>
+
+        <div class="card">
+          <h2>Riwayat Convert</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>Waktu</th>
+                <th>Jumlah BossX</th>
+                <th>Jumlah USDT</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="convertHistory"></tbody>
+          </table>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <div class="footer">©2025 Public Dashboard BossX • Terbuka untuk umum 💼✨</div>
+
+  <script>
+    // State & Konstanta
+    let mining = 0,
+        balance = 0,
+        walletBossX = 0,
+        isMiningActive = false,
+        hasPackage = false,
+        rewardPerSecond = 0,
+        stopCountdown = 0,
+        countdown = 60;
+
+    const monthlyYieldRate = 0.10;
+    const contractSeconds  = 31 * 24 * 60 * 60;
+    const bossXtoUSDT      = 1;
+
+    // DOM references
+    const onBtn       = document.getElementById("onBtn");
+    const miningLabel = document.getElementById("mining");
+    const stopLabel   = document.getElementById("stopCountdown");
+    const countdownLabel  = document.getElementById("countdown");
+    const balanceLabel    = document.getElementById("balance");
+    const walletLabel     = document.getElementById("walletBossX");
+    const amountInput     = document.getElementById("amountInput");
+    const historyBody     = document.getElementById("history");
+    const walletHistory   = document.getElementById("walletHistory");
+    const convertHistory  = document.getElementById("convertHistory");
+    const buyBtn          = document.getElementById("buyBtn");
+    const convertBtn      = document.getElementById("convertBtn");
+
+    // Helpers
+    function formatTime(sec) {
+      const h = String(Math.floor(sec/3600)).padStart(2,'0'),
+            m = String(Math.floor((sec%3600)/60)).padStart(2,'0'),
+            s = String(sec%60).padStart(2,'0');
+      return `${h}:${m}:${s}`;
+    }
+
+    function formatNow() {
+      const now = new Date();
+      const days = ["Minggu","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"];
+      return {
+        hari: days[now.getDay()],
+        tanggal: now.toLocaleDateString("id-ID"),
+        jam: now.toLocaleTimeString("id-ID")
+      };
+    }
+
+    function logAutoClaim(amount) {
+      if (amount <= 0) return;
+      const w = formatNow();
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td>${w.hari}</td>
+        <td>${w.tanggal}</td>
+        <td>${w.jam}</td>
+        <td>+${amount.toFixed(9)} BossX</td>
+        <td>✅</td>
+      `;
+      historyBody.prepend(row);
+    }
+
+    function logTx(type, amt, container) {
+      const time = new Date().toLocaleString("id-ID");
+      const row = document.createElement("tr");
+      row.innerHTML = `<td>${time}</td><td>${type}</td><td>${amt}</td><td>✅</td>`;
+      container.prepend(row);
+    }
+
+    function updateStopCountdown() {
+      if (stopCountdown > 0) {
+        stopCountdown--;
+        stopLabel.textContent = "Berhenti otomatis dalam: " + formatTime(stopCountdown);
+      } else {
+        clearInterval(intervalStop);
+        clearInterval(intervalMining);
+        clearInterval(intervalClaim);
+        clearInterval(intervalCountdown);
+        isMiningActive = false;
+        stopLabel.textContent = "Kontrak selesai, klik power untuk mulai lagi";
+        onBtn.disabled = false;
+      }
+    }
+
+    function updateMining() {
+      mining += rewardPerSecond;
+      miningLabel.textContent = mining.toFixed(9) + " BossX";
+    }
+
+    function updateCountdown() {
+      countdown--;
+      countdownLabel.textContent = "Auto-claim dalam: " + countdown + " detik";
+      if (countdown <= 0) countdown = 60;
+    }
+
+    function autoClaim() {
+      if (mining <= 0) return;
+      balance += mining;
+      logAutoClaim(mining);
+      mining = 0;
+      miningLabel.textContent = "0.000000000 BossX";
+      balanceLabel.textContent = balance.toFixed(9) + " BossX";
+    }
+
+    // Event Listeners
+    onBtn.addEventListener("click", () => {
+      if (!hasPackage || isMiningActive) return;
+      isMiningActive = true;
+      onBtn.disabled = true;
+      stopCountdown = contractSeconds;
+      countdown     = 60;
+      stopLabel.textContent = "Berhenti otomatis dalam: " + formatTime(stopCountdown);
+
+      intervalMining    = setInterval(updateMining,    1000);
+      intervalClaim     = setInterval(autoClaim,      60000);
+      intervalCountdown = setInterval(updateCountdown, 1000);
+      intervalStop      = setInterval(updateStopCountdown, 1000);
+    });
+
+    buyBtn.addEventListener("click", () => {
+      if (hasPackage) {
+        alert("Paket hanya dapat diaktifkan sekali.");
+        return;
+      }
+      const amt = parseInt(amountInput.value, 10);
+      if (isNaN(amt) || amt < 50) {
+        alert("Minimal paket adalah 50 BossX.");
+        return;
+      }
+      walletBossX += amt;
+      walletLabel.textContent = walletBossX + " BossX";
+      logTx("Aktivasi Paket", "+" + amt + " BossX", walletHistory);
+
+      rewardPerSecond = (amt * monthlyYieldRate) / contractSeconds;
+      hasPackage     = true;
+      buyBtn.disabled = true;
+    });
+
+    convertBtn.addEventListener("click", () => {
+      if (balance < 1) {
+        alert("Minimal convert adalah 1 BossX");
+        return;
+      }
+      const usdt = balance * bossXtoUSDT;
+      logTx("Convert Reward", balance.toFixed(9) + " BossX → " + usdt.toFixed(9) + " USDT", convertHistory);
+      balance = 0;
+      balanceLabel.textContent = "0.000000000 BossX";
+    });
+
+    // Inisialisasi tampilan
+    stopLabel.textContent      = "Belum berjalan";
+    countdownLabel.textContent = "Auto-claim dalam: 60 detik";
+    walletLabel.textContent    = walletBossX + " BossX";
+  </script>
+</body>
+</html>
 
