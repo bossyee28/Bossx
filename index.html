@@ -2073,7 +2073,7 @@
             document.getElementById('masa-berlaku').textContent = masaBerlaku.toLocaleString('id-ID') + ' detik';
             if (masaBerlaku <= 0) {
                 clearInterval(masaInterval);
-                document.getElementById('masa-berlaku').textContent = '0 detik (Kontrak Berakhir)';
+                document.getElementById('masa-berlaku').textContent = 'Expired';
                 forceStopValidation(); // Stop validasi jika masa berlaku habis
                 appendLog('[STATUS] Masa berlaku validasi berakhir (0 detik)');
                 showErrorMessage('Kontrak validasi berakhir! Aktivasi ulang diperlukan.');
@@ -3425,6 +3425,38 @@
             // Render the app
             ReactDOM.render(h(App), document.getElementById('chat-room-container'));
         }
+        // Fungsi untuk update running text dengan harga real-time dari Binance
+        async function updateRunningText() {
+            const runningText = document.getElementById('running-text');
+            if (!runningText) return;
+
+            const symbols = ['BTCUSDT', 'ETHUSDT', 'TRXUSDT', 'SOLUSDT', 'TRUMPUSDT'];
+            let text = '🔥 BossX +0% $1 • ';
+
+            try {
+                const response = await fetch(`https://api.binance.com/api/v3/ticker/24hr?symbols=${JSON.stringify(symbols)}`);
+                const data = await response.json();
+
+                data.forEach(item => {
+                    const symbol = item.symbol.replace('USDT', '');
+                    const price = parseFloat(item.lastPrice).toFixed(symbol === 'TRX' ? 4 : 2); // Presisi lebih tinggi untuk TRX
+                    const change = parseFloat(item.priceChangePercent).toFixed(1);
+                    const sign = change >= 0 ? '+' : '';
+                    text += `${symbol} ${sign}${change}% $${price} • `;
+                });
+
+                text += '🚀 | BossX Validator Masternode System Active';
+                runningText.textContent = text;
+            } catch (error) {
+                console.error('Gagal fetch data Binance:', error);
+                // Fallback ke data statis jika gagal
+                runningText.textContent = '🔥 BossX +0% $1 • BTC +0.5% $65000 • ETH -1.2% $3500 • TRX +2.1% $0.15 • SOL +3.4% $150 • TRUMP -0.8% $7.5 🚀 | BossX Validator Masternode System Active';
+            }
+        }
+
+        // Panggil pertama kali dan update setiap 30 detik
+        updateRunningText();
+        setInterval(updateRunningText, 30000);
     </script>
 </body>
 </html>
